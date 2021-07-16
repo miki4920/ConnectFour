@@ -30,4 +30,9 @@ class ConnectFour:
                 break
 
     def check_column_winner(self):
-        pass
+        for column in range(0, self.width):
+            for row in range(0, (self.height-self.requirements)+1):
+                column_slice = self.board[column][0+row:0+row+self.requirements]
+                if all(map(lambda symbol: symbol == Config.player_one, column_slice)) or all(map(lambda symbol: symbol == Config.player_two, column_slice)):
+                    return True
+        return False

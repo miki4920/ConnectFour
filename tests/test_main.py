@@ -35,3 +35,13 @@ def test_check_column():
         connect_four.add_element(0, True)
     assert not connect_four.check_column(0)
 
+
+def test_check_column_winner():
+    for column in range(0, Config.width):
+        for i in range(0, (Config.height-Config.requirements)+1):
+            connect_four = ConnectFour()
+            for _ in range(0, i):
+                connect_four.add_element(column, False)
+            for _ in range(0, Config.requirements):
+                connect_four.add_element(column, True)
+            assert connect_four.check_column_winner()
