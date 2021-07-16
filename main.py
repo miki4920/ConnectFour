@@ -3,16 +3,17 @@ from typing import List
 from config import Config
 
 
-def generate_board(width: int, height: int) -> List:
+def generate_board(width: int, height: int) -> List[List[str]]:
     board = [[""] * height] * width
     return board
 
 
 class ConnectFour:
-    def __init__(self, width: int, height: int):
-        self.width = width
-        self.height = height
-        self.board = generate_board(width, height)
+    def __init__(self):
+        self.width = Config.width
+        self.height = Config.height
+        self.board = generate_board(self.width, self.height)
+        self.requirements = Config.requirements
 
     def check_column(self, position: int):
         column = self.board[position]
@@ -27,3 +28,6 @@ class ConnectFour:
             if not column[i]:
                 column[i] = Config.player_one if player else Config.player_two
                 break
+
+    def check_column_winner(self):
+        pass
