@@ -23,9 +23,9 @@ def test_add_element():
     connect_four = ConnectFour()
     assert not connect_four.board[0][0]
     connect_four.add_element(0, True)
-    connect_four.add_element(0, False)
     assert connect_four.board[0][0] == Config.player_one
-    assert connect_four.board[0][1] == Config.player_two
+    assert not connect_four.board[1][0]
+    assert not connect_four.board[0][1]
 
 
 def test_check_column():
@@ -38,10 +38,26 @@ def test_check_column():
 
 def test_check_column_winner():
     for column in range(0, Config.width):
-        for i in range(0, (Config.height-Config.requirements)+1):
+        for i in range(0, (Config.height - Config.requirements) + 1):
             connect_four = ConnectFour()
             for _ in range(0, i):
                 connect_four.add_element(column, False)
             for _ in range(0, Config.requirements):
                 connect_four.add_element(column, True)
             assert connect_four.check_column_winner()
+
+
+def test_check_row_winner():
+    for row in range(0, Config.height):
+        for displacement in range(0, (Config.width - Config.requirements) + 1):
+            connect_four = ConnectFour()
+            for _ in range(0, row):
+                for position in range(0, Config.width):
+                    connect_four.add_element(position, position % 2 == 0)
+            for position in range(0, Config.requirements):
+                connect_four.add_element(position+displacement, True)
+            assert connect_four.check_row_winner()
+
+
+
+
