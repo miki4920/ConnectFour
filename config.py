@@ -4,3 +4,4 @@ class Config:
     requirements = 4
     player_one = "X"
     player_two = "Y"
+    blank = "-"
