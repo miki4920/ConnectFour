@@ -29,7 +29,7 @@ class ConnectFour:
         for i in range(0, len(column)):
             if not column[i]:
                 self.board[position][i] = Config.player_one if player else Config.player_two
-                break
+                return True
 
     def check_column_winner(self) -> bool:
         for column in self.board:
@@ -59,9 +59,9 @@ class ConnectFour:
                 for i in range(0, Config.requirements):
                     diagonal_left += self.board[i + row][-1 - i - column]
                     diagonal_right += self.board[Config.requirements - 1 - i + row][-1 - i - column]
-                if Config.player_one in (diagonal_left, diagonal_right):
+                if Config.player_one*Config.requirements in (diagonal_left, diagonal_right):
                     return Config.player_one
-                if Config.player_two in (diagonal_left, diagonal_right):
+                if Config.player_two*Config.requirements in (diagonal_left, diagonal_right):
                     return Config.player_two
         return False
 
@@ -77,3 +77,14 @@ class ConnectFour:
             return diagonal
         return False
 
+
+if __name__ == "__main__":
+    board = ConnectFour()
+    player = True
+    while not board.check_winner():
+        position = input("Select Column")
+        if position.isnumeric():
+            if board.add_element(int(position), player):
+                player = not player
+                board.print_board()
+    print(board.check_winner())
