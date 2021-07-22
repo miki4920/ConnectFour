@@ -19,6 +19,13 @@ def test_construction():
     assert connect_four.requirements < Config.height
 
 
+def test_reset_board():
+    connect_four = ConnectFour()
+    connect_four.board[0][0] = Config.player_one
+    connect_four.reset_board()
+    assert not connect_four.board[0][0]
+
+
 def test_add_element():
     connect_four = ConnectFour()
     assert not connect_four.board[0][0]
