@@ -1,81 +1,79 @@
+from kivy.app import App
+from kivy.uix.button import Button
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.label import Label
+from kivy.uix.popup import Popup
 
-
-from typing import List, Union
+from typing import List, Tuple, Callable, Generator
 
 from config import Config
+from board import ConnectFour
 
 
-def generate_board(width: int, height: int) -> List[List[str]]:
-    board = [["" for _ in range(0, height)] for _ in range(0, width)]
-    return board
+def pick_colour(element: str) -> List[float]:
+    if element:
+        return Config.player_one_colour if element == Config.player_one else Config.player_two_colour
+    return Config.blank_colour
 
 
-class ConnectFour:
+def set_button(colour: List[float], position: Tuple[int, int], function: Callable) -> Button:
+    button = Button(background_color=colour)
+    button.ids['position'] = position
+    button.bind(on_release=function)
+    return button
+
+
+def set_popup(winner: str, function: Callable) -> Popup:
+    popup = Popup(title='Winner!',
+                  content=Label(text=winner),
+                  size_hint=(None, None), size=(100, 100))
+    popup.bind(on_dismiss=function)
+    return popup
+
+
+def button_board(board: List[List[str]], function: Callable) -> Generator[Button, None, None]:
+    for column in range(0, Config.height):
+        for row in range(0, Config.width):
+            element = board[row][-1 - column]
+            colour = pick_colour(element)
+            position = (row, -1 - column)
+            button = set_button(colour, position, function)
+            yield button
+
+
+class MainApp(App):
     def __init__(self):
-        self.width = Config.width
-        self.height = Config.height
-        self.board = generate_board(self.width, self.height)
-        self.requirements = Config.requirements
+        super().__init__()
+        self.connect_four = ConnectFour()
+        self.grid_layout = GridLayout(cols=Config.width)
+        self.current_player = True
 
-    def reset_board(self):
-        self.board = generate_board(self.width, self.height)
+    def create_board(self):
+        board = button_board(self.connect_four.board, self.add_element_gui)
+        for button in board:
+            self.grid_layout.add_widget(button)
 
-    def print_board(self):
-        for i in range(0, self.height):
-            row = "" if i != 0 else "\n"
-            for column in self.board:
-                row += column[-1-i] if column[-1-i] else Config.blank
-            print(row)
+    def reset_board(self, instance=None, soft_reset=False):
+        if not soft_reset:
+            self.connect_four.reset_board()
+        self.grid_layout.clear_widgets()
+        self.create_board()
 
-    def add_element(self, position: int, player: bool):
-        column = self.board[position]
-        for i in range(0, len(column)):
-            if not column[i]:
-                self.board[position][i] = Config.player_one if player else Config.player_two
-                return True
+    def add_element_gui(self, instance: Button):
+        if instance.background_color in (Config.player_one_colour, Config.player_two_colour):
+            return
+        position = instance.ids["position"]
+        self.connect_four.add_element(position[0], self.current_player)
+        self.current_player = not self.current_player
+        self.reset_board(soft_reset=True)
+        if winner := self.connect_four.check_winner():
+            popup = set_popup(winner, self.reset_board)
+            popup.open()
 
-    def check_column_winner(self) -> str:
-        for column in self.board:
-            string_column = "".join(column)
-            if string_column.find(Config.player_one * self.requirements) >= 0:
-                return Config.player_one_name
-            elif string_column.find(Config.player_two * self.requirements) >= 0:
-                return Config.player_two_name
-        return ""
+    def build(self):
+        self.create_board()
+        return self.grid_layout
 
-    def check_row_winner(self) -> str:
-        for i in range(0, self.height):
-            string_row = ""
-            for column in self.board:
-                string_row += column[i] if column[i] else Config.blank
-            if string_row.find(Config.player_one * self.requirements) >= 0:
-                return Config.player_one_name
-            elif string_row.find(Config.player_two * self.requirements) >= 0:
-                return Config.player_two_name
-        return ""
 
-    def check_diagonal_winner(self) -> str:
-        for column in range(0, (Config.height - Config.requirements) + 1):
-            for row in range(0, (Config.width - Config.requirements) + 1):
-                diagonal_left = ""
-                diagonal_right = ""
-                for i in range(0, Config.requirements):
-                    diagonal_left += self.board[i + row][-1 - i - column]
-                    diagonal_right += self.board[Config.requirements - 1 - i + row][-1 - i - column]
-                if Config.player_one*Config.requirements in (diagonal_left, diagonal_right):
-                    return Config.player_one_name
-                if Config.player_two*Config.requirements in (diagonal_left, diagonal_right):
-                    return Config.player_two_name
-        return ""
-
-    def check_winner(self) -> str:
-        row = self.check_row_winner()
-        column = self.check_column_winner()
-        diagonal = self.check_diagonal_winner()
-        if row:
-            return row
-        if column:
-            return column
-        if diagonal:
-            return diagonal
-        return ""
+if __name__ == "__main__":
+    MainApp().run()
