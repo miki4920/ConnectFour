@@ -47,7 +47,7 @@ class ConnectFour:
         for i in range(0, self.height):
             string_row = ""
             for column in self.board:
-                string_row += column[i]
+                string_row += column[i] if column[i] else Config.blank
             if string_row.find(Config.player_one * self.requirements) >= 0:
                 return Config.player_one_name
             elif string_row.find(Config.player_two * self.requirements) >= 0:
