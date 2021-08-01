@@ -1,1 +1,12 @@
-<p>Hello</p>
+{% if winner %}
+    <p>Winner is {{winner}}!</p>
+{% endif %}
+
+{% for row in board %}
+    <p>{{row}}</p>
+{% endfor %}
+
+<form action="/" method="post">
+    <input type="number" name="position" min="1" max="{{width}}">
+    <button type="submit"></button>
+</form>

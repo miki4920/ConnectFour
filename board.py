@@ -1,31 +1,32 @@
-
-
-from typing import List, Union
+from typing import List
 
 from config import Config
 
 
-def generate_board(width: int, height: int) -> List[List[str]]:
-    board = [["" for _ in range(0, height)] for _ in range(0, width)]
+def generate_board() -> List[List[str]]:
+    board = [["" for _ in range(0, Config.height)] for _ in range(0, Config.width)]
     return board
 
 
+def transpose_board(board):
+    transposed_board = []
+    for i in range(0, Config.height):
+        row = ""
+        for column in board:
+            row += column[- 1 - i] if column[- 1 - i] else Config.blank
+        transposed_board.append(row)
+    return transposed_board
+
+
 class ConnectFour:
-    def __init__(self):
+    def __init__(self, board: List[List[str]] = None):
         self.width = Config.width
         self.height = Config.height
-        self.board = generate_board(self.width, self.height)
+        self.board = board if board else generate_board()
         self.requirements = Config.requirements
 
     def reset_board(self):
-        self.board = generate_board(self.width, self.height)
-
-    def print_board(self):
-        for i in range(0, self.height):
-            row = "" if i != 0 else "\n"
-            for column in self.board:
-                row += column[-1-i] if column[-1-i] else Config.blank
-            print(row)
+        self.board = generate_board()
 
     def add_element(self, position: int, player: bool):
         column = self.board[position]
@@ -62,9 +63,9 @@ class ConnectFour:
                 for i in range(0, Config.requirements):
                     diagonal_left += self.board[i + row][-1 - i - column]
                     diagonal_right += self.board[Config.requirements - 1 - i + row][-1 - i - column]
-                if Config.player_one*Config.requirements in (diagonal_left, diagonal_right):
+                if Config.player_one * Config.requirements in (diagonal_left, diagonal_right):
                     return Config.player_one_name
-                if Config.player_two*Config.requirements in (diagonal_left, diagonal_right):
+                if Config.player_two * Config.requirements in (diagonal_left, diagonal_right):
                     return Config.player_two_name
         return ""
 

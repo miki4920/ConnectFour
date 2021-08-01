@@ -1,12 +1,22 @@
 from config import Config
-from board import generate_board, ConnectFour
+from board import generate_board, transpose_board, ConnectFour
 
 
 def test_generate_board():
-    board = generate_board(Config.width, Config.height)
+    board = generate_board()
     assert len(board) == Config.width
     assert len(board[0]) == Config.height
     assert not board[0][0]
+
+
+def test_transpose_board():
+    board = generate_board()
+    transposed_board = ["-"*Config.width for _ in range(0, Config.height)]
+    assert transpose_board(board) == transposed_board
+    connect_four = ConnectFour(board)
+    connect_four.add_element(0, True)
+    transposed_board[-1] = Config.player_one + "-"*(Config.width-1)
+    assert transpose_board(connect_four.board) == transposed_board
 
 
 def test_construction():
