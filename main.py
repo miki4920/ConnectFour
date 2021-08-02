@@ -2,7 +2,7 @@ import json
 
 from flask import Flask, make_response, render_template, request
 
-from board import ConnectFour, transpose_board
+from board import ConnectFour
 from config import Config
 
 app = Flask(__name__)
@@ -30,7 +30,7 @@ def connect_four_get():
     connect_four = ConnectFour(get_board(request))
     player = get_player(request)
     response = make_response(
-        render_template('connect_four.html', board=transpose_board(connect_four.board), player=player,
+        render_template('connect_four.html', board=connect_four.board, player=player,
                         width=Config.width))
     set_board(response, connect_four.board)
     set_player(response, player)
@@ -41,12 +41,14 @@ def connect_four_get():
 def connect_four_set():
     connect_four = ConnectFour(get_board(request))
     player = get_player(request)
-    position = int(request.form['position'])-1
-    connect_four.add_element(position, player)
+    position = int(request.form['position'])
     winner = connect_four.check_winner()
-    player = not player
+    if not winner:
+        connect_four.add_element(position, player)
+        winner = connect_four.check_winner()
+        player = not player
     response = make_response(
-        render_template('connect_four.html', board=transpose_board(connect_four.board), player=player,
+        render_template('connect_four.html', board=connect_four.board, player=player,
                         width=Config.width, winner=winner))
     set_board(response, connect_four.board)
     set_player(response, player)

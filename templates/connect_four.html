@@ -7,12 +7,16 @@
 {% if winner %}
     <p>Winner is {{ winner }}!</p>
 {% endif %}
+<form action="" method="post" id="position_form">
+    <input type="hidden" name="position" id="position_input">
+</form>
 <div id="connect_four">
-    {% for row in board %}
-        <div class="row">
-            {% for element in row %}
-                <button>{{ element }}</button>
-            {% endfor %}
+    {% for column in board %}
+        {% set column_loop = loop %}
+        <div class="connect_four_column">
+        {% for element in column %}
+            <button class="connect_four_element" onclick="send_position({{ column_loop.index0 }})">{{ element }}</button>
+        {% endfor %}
         </div>
     {% endfor %}
 </div>
