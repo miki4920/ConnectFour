@@ -9,7 +9,8 @@ app = Flask(__name__)
 
 
 def get_board(request):
-    return json.loads(request.cookies.get('connect_four_board'))
+    cookie = request.cookies.get('connect_four_board')
+    return json.loads(cookie) if cookie else None
 
 
 def get_player(request):

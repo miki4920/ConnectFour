@@ -1,12 +1,21 @@
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/static/connect_four.css">
+    <title>Connect Four</title>
+</head>
+<body>
 {% if winner %}
-    <p>Winner is {{winner}}!</p>
+    <p>Winner is {{ winner }}!</p>
 {% endif %}
-
-{% for row in board %}
-    <p>{{row}}</p>
-{% endfor %}
-
-<form action="/" method="post">
-    <input type="number" name="position" min="1" max="{{width}}">
-    <button type="submit"></button>
-</form>
+<div id="connect_four">
+    {% for row in board %}
+        <div class="row">
+            {% for element in row %}
+                <button>{{ element }}</button>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>
+</body>
+<script src="/static/connect_four.js"></script>
+</html>
