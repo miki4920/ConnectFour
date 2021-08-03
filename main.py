@@ -30,7 +30,8 @@ def connect_four_get():
     connect_four = ConnectFour(get_board(request))
     player = get_player(request)
     response = make_response(
-        render_template('connect_four.html', board=connect_four.board, player=player,
+        render_template('connect_four.html', board=connect_four.board, player=player, player_one=Config.player_one,
+                        player_two=Config.player_two,
                         width=Config.width))
     set_board(response, connect_four.board)
     set_player(response, player)
@@ -48,7 +49,8 @@ def connect_four_set():
         winner = connect_four.check_winner()
         player = not player
     response = make_response(
-        render_template('connect_four.html', board=connect_four.board, player=player,
+        render_template('connect_four.html', board=connect_four.board, player=player, player_one=Config.player_one,
+                        player_two=Config.player_two,
                         width=Config.width, winner=winner))
     set_board(response, connect_four.board)
     set_player(response, player)

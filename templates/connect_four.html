@@ -15,7 +15,14 @@
         {% set column_loop = loop %}
         <div class="connect_four_column">
         {% for element in column %}
-            <button class="connect_four_element" onclick="send_position({{ column_loop.index0 }})">{{ element }}</button>
+            {% if element == player_one %}
+                <button class="connect_four_element_player_one" onclick="send_position({{ column_loop.index0 }})">{{ element }}</button>
+            {% elif element == player_two %}
+                <button class="connect_four_element_player_two" onclick="send_position({{ column_loop.index0 }})">{{ element }}</button>
+            {% else %}
+                <button class="connect_four_element" onclick="send_position({{ column_loop.index0 }})">{{ element }}</button>
+            {% endif %}
+
         {% endfor %}
         </div>
     {% endfor %}

@@ -29,15 +29,26 @@ body {
     margin: 4px;
 }
 
-.connect_four_element {
+.connect_four_element, .connect_four_element_player_one, .connect_four_element_player_two {
 	height: 100%;
     margin: 4px;
     border-radius: 100%;
-    background-color: rgba(255, 255, 255, 0.09);
     border: none;
     cursor: pointer;
 }
 
+.connect_four_element {
+    background-color: rgba(255, 255, 255, 0.09);
+}
+
 .connect_four_element:hover {
     background-color: rgba(255, 255, 255, 0.11);
+}
+
+.connect_four_element_player_one {
+    background-color: rgba(255, 195, 0, 0.65);
+}
+
+.connect_four_element_player_two {
+    background-color: rgba(255, 0, 0, 0.45);
 }
