@@ -38,16 +38,14 @@ def connect_four_get():
     return response
 
 
-@app.route("/", methods=["POST"])
-def connect_four_set():
+def add_element(request, arguments):
+    assert len(arguments) == 1
+
     connect_four = ConnectFour(get_board(request))
     player = get_player(request)
-    position = int(request.form['position'])
+
+    connect_four.add_element(arguments[0], player)
     winner = connect_four.check_winner()
-    if not winner:
-        connect_four.add_element(position, player)
-        winner = connect_four.check_winner()
-        player = not player
     response = make_response(
         render_template('connect_four.html', board=connect_four.board, player=player, player_one=Config.player_one,
                         player_two=Config.player_two,
@@ -55,3 +53,12 @@ def connect_four_set():
     set_board(response, connect_four.board)
     set_player(response, player)
     return response
+
+
+@app.route("/", methods=["POST"])
+def connect_four_post():
+    command_dictionary = {"add": add_element,
+                          "reset": reset_board}
+    command = request.form['command'].split(":")
+    command, arguments = command[0], command[1:]
+    return command_dictionary[command](request, arguments)
