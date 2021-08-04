@@ -46,10 +46,24 @@ def add_element(request, arguments):
 
     connect_four.add_element(arguments[0], player)
     winner = connect_four.check_winner()
+    player = not player
     response = make_response(
         render_template('connect_four.html', board=connect_four.board, player=player, player_one=Config.player_one,
                         player_two=Config.player_two,
                         width=Config.width, winner=winner))
+    set_board(response, connect_four.board)
+    set_player(response, player)
+    return response
+
+
+def reset_board(request, arguments):
+    connect_four = ConnectFour(get_board(request))
+    connect_four.reset_board()
+    player = get_player(request)
+    response = make_response(
+        render_template('connect_four.html', board=connect_four.board, player=player, player_one=Config.player_one,
+                        player_two=Config.player_two,
+                        width=Config.width, winner=None))
     set_board(response, connect_four.board)
     set_player(response, player)
     return response
