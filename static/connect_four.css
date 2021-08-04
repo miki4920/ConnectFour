@@ -4,20 +4,36 @@
     font-family: serif;
 }
 
+html {
+    max-height: 100%;
+}
+
 body {
     display: flex;
+    flex-direction: row;
     justify-content: center;
     background-color: rgb(18, 18, 18);
-    margin: 0 4px;
+    max-height: 100%;
 }
+
+
+#settings {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
 
 #connect_four {
     display: flex;
+    flex-grow: 3;
     flex-wrap: nowrap;
     flex-direction: row;
     justify-content: space-evenly;
     min-width: 54%;
+    max-width: 54%;
     min-height: 96%;
+    max-height: 96%;
 }
 
 .connect_four_column {
@@ -26,12 +42,10 @@ body {
     flex-direction: column-reverse;
     flex-wrap: nowrap;
     justify-content: center;
-    margin: 4px;
 }
 
 .connect_four_element, .connect_four_element_player_one, .connect_four_element_player_two {
 	height: 100%;
-    margin: 4px;
     border-radius: 100%;
     border: none;
     cursor: pointer;
@@ -51,4 +65,10 @@ body {
 
 .connect_four_element_player_two {
     background-color: rgba(255, 0, 0, 0.45);
+}
+
+#board {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }

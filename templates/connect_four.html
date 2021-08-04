@@ -4,12 +4,12 @@
     <title>Connect Four</title>
 </head>
 <body>
-{% if winner %}
-    <p>Winner is {{ winner }}!</p>
-{% endif %}
 <form action="" method="post" id="position_form">
     <input type="hidden" name="position" id="position_input">
 </form>
+<div id="settings">
+    <button type="button">Reset</button>
+</div>
 <div id="connect_four">
     {% for column in board %}
         {% set column_loop = loop %}
@@ -26,6 +26,9 @@
         {% endfor %}
         </div>
     {% endfor %}
+</div>
+<div id="board">
+    <button type="button">Reset</button>
 </div>
 </body>
 <script src="/static/connect_four.js"></script>
