@@ -38,13 +38,13 @@ def connect_four_get():
     return response
 
 
-def add_element(request, arguments):
-    assert len(arguments) == 1
+def add_element(request, argument):
+    assert len(argument) == 1
 
     connect_four = ConnectFour(get_board(request))
     player = get_player(request)
 
-    connect_four.add_element(arguments[0], player)
+    connect_four.add_element(int(argument[0]), player)
     winner = connect_four.check_winner()
     player = not player
     response = make_response(
@@ -56,7 +56,7 @@ def add_element(request, arguments):
     return response
 
 
-def reset_board(request, arguments):
+def reset_board(request, argument):
     connect_four = ConnectFour(get_board(request))
     connect_four.reset_board()
     player = get_player(request)
@@ -74,5 +74,5 @@ def connect_four_post():
     command_dictionary = {"add": add_element,
                           "reset": reset_board}
     command = request.form['command'].split(":")
-    command, arguments = command[0], command[1:]
-    return command_dictionary[command](request, arguments)
+    command, argument = command[0], command[1:]
+    return command_dictionary[command](request, argument)

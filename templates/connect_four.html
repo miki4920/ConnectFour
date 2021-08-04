@@ -4,11 +4,11 @@
     <title>Connect Four</title>
 </head>
 <body>
-<form action="" method="post" id="position_form">
-    <input type="hidden" name="position" id="position_input">
+<form action="" method="post" id="command_form">
+    <input type="hidden" name="command" id="command">
 </form>
 <div id="settings">
-    <button type="button">Reset</button>
+    <button type="button" onclick="send_command('reset')">Reset</button>
 </div>
 <div id="connect_four">
     {% for column in board %}
@@ -16,11 +16,11 @@
         <div class="connect_four_column">
         {% for element in column %}
             {% if element == player_one %}
-                <button class="connect_four_element_player_one" onclick="send_position({{ column_loop.index0 }})">{{ element }}</button>
+                <button class="connect_four_element_player_one" onclick="send_command('add', {{ column_loop.index0 }})">{{ element }}</button>
             {% elif element == player_two %}
-                <button class="connect_four_element_player_two" onclick="send_position({{ column_loop.index0 }})">{{ element }}</button>
+                <button class="connect_four_element_player_two" onclick="send_command('add', {{ column_loop.index0 }})">{{ element }}</button>
             {% else %}
-                <button class="connect_four_element" onclick="send_position({{ column_loop.index0 }})">{{ element }}</button>
+                <button class="connect_four_element" onclick="send_command('add', {{ column_loop.index0 }})">{{ element }}</button>
             {% endif %}
 
         {% endfor %}
