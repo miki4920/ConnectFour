@@ -1,6 +1,7 @@
 * {
     box-sizing: border-box;
-    font-size: 1em;
+    color: rgba(255, 255, 255, 0.89);
+    font-size: 1.09em;
     font-family: serif;
 }
 
@@ -12,24 +13,43 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    margin: 0;
     background-color: rgb(18, 18, 18);
     max-height: 100%;
 }
 
 
-#settings {
+#settings, #board{
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
+    flex-basis: 25%;
+    background-color: rgba(255, 255, 255, 0.09);
+    border-radius: 8px;
+}
+
+#settings button, #board button {
+    background-color: rgba(255, 255, 255, 0.09);
+    border: none;
+    border-radius: 8px;
+    margin: 1px 0;
+}
+
+#settings button {
+    cursor: pointer;
+}
+
+#settings button:hover {
+    background-color: rgba(255, 255, 255, 0.11);
 }
 
 
 #connect_four {
     display: flex;
-    flex-grow: 3;
+    flex-basis: 50%;
     flex-wrap: nowrap;
     flex-direction: row;
     justify-content: space-evenly;
+    margin: 16px;
     min-width: 54%;
     max-width: 54%;
     min-height: 96%;
@@ -46,6 +66,7 @@ body {
 
 .connect_four_element, .connect_four_element_player_one, .connect_four_element_player_two {
 	height: 100%;
+    margin: 2px;
     border-radius: 100%;
     border: none;
     cursor: pointer;
@@ -67,8 +88,7 @@ body {
     background-color: rgba(255, 0, 0, 0.45);
 }
 
-#board {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
+#board p {
+    text-align: center;
+    margin: 0;
 }
