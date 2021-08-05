@@ -28,8 +28,8 @@
     {% endfor %}
 </div>
 <div id="board">
-    <button type="button">Player: {{ player }}</button>
-    <button type="button">Winner: {{ winner }}</button>
+    <button type="button">Player: {% if player %}{{ player_one_name }}{% else %}{{ player_two_name }}{% endif %}</button>
+    <button type="button">Winner: {% if winner %}{{ winner }}{% else %}None{% endif %}</button>
 </div>
 </body>
 <script src="/static/connect_four.js"></script>

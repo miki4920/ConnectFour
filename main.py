@@ -25,34 +25,34 @@ def set_player(request, player):
     request.set_cookie('current_player', Config.player_one_name if player else Config.player_two_name)
 
 
-@app.route("/", methods=["GET"])
-def connect_four_get():
-    connect_four = ConnectFour(get_board(request))
-    player = get_player(request)
+def create_response(connect_four, player, winner=""):
     response = make_response(
         render_template('connect_four.html', board=connect_four.board, player=player, player_one=Config.player_one,
-                        player_two=Config.player_two,
-                        width=Config.width))
+                        player_one_name=Config.player_one_name,
+                        player_two=Config.player_two, player_two_name=Config.player_two_name,
+                        width=Config.width, winner=winner))
     set_board(response, connect_four.board)
     set_player(response, player)
     return response
 
 
-def add_element(request, argument):
-    assert len(argument) == 1
-
+@app.route("/", methods=["GET"])
+def connect_four_get():
     connect_four = ConnectFour(get_board(request))
     player = get_player(request)
+    return create_response(connect_four, player)
 
-    connect_four.add_element(int(argument[0]), player)
+
+def add_element(request, argument):
+    assert len(argument) == 1
+    connect_four = ConnectFour(get_board(request))
+    player = get_player(request)
     winner = connect_four.check_winner()
-    player = not player
-    response = make_response(
-        render_template('connect_four.html', board=connect_four.board, player=player, player_one=Config.player_one,
-                        player_two=Config.player_two,
-                        width=Config.width, winner=winner))
-    set_board(response, connect_four.board)
-    set_player(response, player)
+    if not winner:
+        connect_four.add_element(int(argument[0]), player)
+        winner = connect_four.check_winner()
+        player = not player
+    response = create_response(connect_four, player, winner)
     return response
 
 
@@ -60,12 +60,7 @@ def reset_board(request, argument):
     connect_four = ConnectFour(get_board(request))
     connect_four.reset_board()
     player = get_player(request)
-    response = make_response(
-        render_template('connect_four.html', board=connect_four.board, player=player, player_one=Config.player_one,
-                        player_two=Config.player_two,
-                        width=Config.width, winner=None))
-    set_board(response, connect_four.board)
-    set_player(response, player)
+    response = create_response(connect_four, player)
     return response
 
 
