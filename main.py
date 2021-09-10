@@ -1,11 +1,13 @@
 import json
 
 from flask import Flask, make_response, render_template, request
+from flask_socketio import SocketIO, emit, send
 
 from board import ConnectFour
 from config import Config
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 
 
 def get_board(request):
@@ -64,6 +66,23 @@ def reset_board(request, argument):
     return response
 
 
+@socketio.on("connect_four_update")
+def connect_four_post_socket(message):
+    message = message.split(":")
+    connect_four = ConnectFour(get_board(request))
+    player = get_player(request)
+    winner = connect_four.check_winner()
+    if not winner:
+        connect_four.add_element(int(message[1]), player)
+        winner = connect_four.check_winner()
+        player = not player
+    template = render_template('connect_four.html', board=connect_four.board, player=player, player_one=Config.player_one,
+                   player_one_name=Config.player_one_name,
+                   player_two=Config.player_two, player_two_name=Config.player_two_name,
+                   width=Config.width, winner=winner)
+    emit("connect_four_board", template, broadcast=True)
+
+
 @app.route("/", methods=["POST"])
 def connect_four_post():
     command_dictionary = {"add": add_element,
@@ -71,3 +90,7 @@ def connect_four_post():
     command = request.form['command'].split(":")
     command, argument = command[0], command[1:]
     return command_dictionary[command](request, argument)
+
+
+if __name__ == '__main__':
+    socketio.run(app)
