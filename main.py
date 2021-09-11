@@ -1,6 +1,6 @@
 import json
 
-from flask import Flask, make_response, render_template, request
+from flask import Flask, make_response, render_template, request, redirect
 from flask_socketio import SocketIO, emit
 
 from board import ConnectFour, generate_board
@@ -24,22 +24,28 @@ def set_user_data(request, board, player):
         json.dump(data_dictionary, file)
 
 
-def create_response(connect_four, player, winner=""):
+@app.route("/", methods=["GET", "POST"])
+def entry_screen():
+    if request.method == "POST":
+        if not request.form.get("mode"):
+            return redirect("/single-player")
+        return redirect("/multi-player")
+    response = make_response(render_template('entry_page.html', board=ConnectFour().board, player=Config.player_one_name))
+    return response
+
+
+@app.route("/single-player", methods=["GET"])
+def single_player():
+    user_data = get_user_data(request)
+    connect_four = ConnectFour(user_data["board"])
+    player = user_data["player"]
+    winner = connect_four.check_winner()
     response = make_response(
         render_template('connect_four.html', board=connect_four.board, player=player, player_one=Config.player_one,
                         player_one_name=Config.player_one_name,
                         player_two=Config.player_two, player_two_name=Config.player_two_name,
                         width=Config.width, winner=winner))
     return response
-
-
-@app.route("/", methods=["GET"])
-def connect_four_get():
-    user_data = get_user_data(request)
-    connect_four = ConnectFour(user_data["board"])
-    player = user_data["player"]
-    winner = connect_four.check_winner()
-    return create_response(connect_four, player, winner)
 
 
 def add_element(request, argument):

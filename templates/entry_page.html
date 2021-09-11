@@ -1,0 +1,29 @@
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/static/connect_four.css">
+    <title>Connect Four</title>
+</head>
+<body>
+<div class="side_panel">
+    <button type="button" class="clickable">Reset</button>
+</div>
+<div id="connect_four">
+    <form method="post" action="">
+        <button type="submit" name="mode" value="" class="clickable">Singleplayer</button>
+        <button type="submit" name="mode" value="Multiplayer" class="clickable">Multiplayer</button>
+    </form>
+    {% for column in board %}
+        {% set column_loop = loop %}
+        <div class="connect_four_column">
+        {% for element in column %}
+            <button class="connect_four_element" id="{{column_loop.index0}},{{loop.index0}}"></button>
+        {% endfor %}
+        </div>
+    {% endfor %}
+</div>
+<div class="side_panel">
+    <button type="button">Player: {% if player %}{{ player_one_name }}{% else %}{{ player_two_name }}{% endif %}</button>
+    <button type="button">Winner: {% if winner %}{{ winner }}{% else %}None{% endif %}</button>
+</div>
+</body>
+</html>
