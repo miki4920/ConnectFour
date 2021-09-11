@@ -16,11 +16,11 @@
         <div class="connect_four_column">
         {% for element in column %}
             {% if element == player_one %}
-                <button class="connect_four_element_player_one" onclick="send_command('add', {{ column_loop.index0 }})">{{ element }}</button>
+                <button class="connect_four_element_Y" id="{{column_loop.index0}},{{loop.index0}}" onclick="send_command('add', {{ column_loop.index0 }})"></button>
             {% elif element == player_two %}
-                <button class="connect_four_element_player_two" onclick="send_command('add', {{ column_loop.index0 }})">{{ element }}</button>
+                <button class="connect_four_element_R" id="{{column_loop.index0}},{{loop.index0}}" onclick="send_command('add', {{ column_loop.index0 }})"></button>
             {% else %}
-                <button class="connect_four_element" onclick="send_command('add', {{ column_loop.index0 }})">{{ element }}</button>
+                <button class="connect_four_element" id="{{column_loop.index0}},{{loop.index0}}" onclick="send_command('add', {{ column_loop.index0 }})"></button>
             {% endif %}
 
         {% endfor %}
@@ -28,8 +28,8 @@
     {% endfor %}
 </div>
 <div id="board">
-    <button type="button">Player: {% if player %}{{ player_one_name }}{% else %}{{ player_two_name }}{% endif %}</button>
-    <button type="button">Winner: {% if winner %}{{ winner }}{% else %}None{% endif %}</button>
+    <button type="button" id="player">Player: {% if player %}{{ player_one_name }}{% else %}{{ player_two_name }}{% endif %}</button>
+    <button type="button" id="winner">Winner: {% if winner %}{{ winner }}{% else %}None{% endif %}</button>
 </div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
