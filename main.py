@@ -82,14 +82,5 @@ def connect_four_post_socket(message):
     emit("connect_four_winner"+user_id, winner)
 
 
-@app.route("/", methods=["POST"])
-def connect_four_post():
-    command_dictionary = {"add": add_element,
-                          "reset": reset_board}
-    command = request.form['command'].split(":")
-    command, argument = command[0], command[1:]
-    return command_dictionary[command](request, argument)
-
-
 if __name__ == '__main__':
     socketio.run(app)
