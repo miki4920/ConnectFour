@@ -49,9 +49,9 @@ def add_element(request, argument):
     player = user_data["player"]
     winner = connect_four.check_winner()
     if not winner:
-        connect_four.add_element(int(argument[0]), player)
-        winner = connect_four.check_winner()
-        player = not player
+        if connect_four.add_element(int(argument[0]), player):
+            winner = connect_four.check_winner()
+            player = not player
     return connect_four, player, winner
 
 
