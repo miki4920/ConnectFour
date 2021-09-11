@@ -4,11 +4,8 @@
     <title>Connect Four</title>
 </head>
 <body>
-<form action="" method="post" id="command_form">
-    <input type="hidden" name="command" id="command">
-</form>
-<div id="settings">
-    <button type="button" onclick="send_command('reset')">Reset</button>
+<div class="side_panel">
+    <button type="button" class="clickable" onclick="send_command('reset')">Reset</button>
 </div>
 <div id="connect_four">
     {% for column in board %}
@@ -27,7 +24,7 @@
         </div>
     {% endfor %}
 </div>
-<div id="board">
+<div class="side_panel">
     <button type="button" id="player">Player: {% if player %}{{ player_one_name }}{% else %}{{ player_two_name }}{% endif %}</button>
     <button type="button" id="winner">Winner: {% if winner %}{{ winner }}{% else %}None{% endif %}</button>
 </div>
