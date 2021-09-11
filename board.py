@@ -25,6 +25,17 @@ class ConnectFour:
         self.board = board if board else generate_board()
         self.requirements = Config.requirements
 
+    def __str__(self):
+        return "\n".join(transpose_board(self.board))
+
+    def __sub__(self, other):
+        change_dictionary = {}
+        for y, column in enumerate(self.board):
+            for x, row in enumerate(column):
+                if self.board[y][x] != other.board[y][x]:
+                    change_dictionary[f"{y},{x}"] = self.board[y][x]
+        return change_dictionary
+
     def reset_board(self):
         self.board = generate_board()
 

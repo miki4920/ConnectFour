@@ -11,11 +11,11 @@ def test_generate_board():
 
 def test_transpose_board():
     board = generate_board()
-    transposed_board = ["-"*Config.width for _ in range(0, Config.height)]
+    transposed_board = ["-" * Config.width for _ in range(0, Config.height)]
     assert transpose_board(board) == transposed_board
     connect_four = ConnectFour(board)
     connect_four.add_element(0, True)
-    transposed_board[-1] = Config.player_one + "-"*(Config.width-1)
+    transposed_board[-1] = Config.player_one + "-" * (Config.width - 1)
     assert transpose_board(connect_four.board) == transposed_board
 
 
@@ -27,6 +27,12 @@ def test_construction():
     assert connect_four.requirements
     assert connect_four.requirements < Config.width
     assert connect_four.requirements < Config.height
+
+
+def test_string():
+    connect_four = ConnectFour()
+    assert type(str(connect_four)) == str
+    assert len(str(connect_four)) == Config.width * Config.height + Config.height - 1
 
 
 def test_reset_board():
@@ -45,6 +51,14 @@ def test_add_element():
     assert not connect_four.board[0][1]
 
 
+def test_sub_board():
+    connect_four = ConnectFour()
+    connect_four_base = ConnectFour()
+    connect_four.add_element(0, True)
+    connect_four.add_element(1, True)
+    assert tuple((connect_four - connect_four_base).keys()) == ("0,0", "1,0")
+
+
 def test_check_column_winner():
     for row in range(0, Config.width):
         for i in range(0, (Config.height - Config.requirements) + 1):
@@ -61,7 +75,7 @@ def test_check_row_winner():
         for displacement in range(0, (Config.width - Config.requirements) + 1):
             connect_four = ConnectFour()
             for position in range(0, Config.requirements):
-                connect_four.board[position+displacement][column] = Config.player_one
+                connect_four.board[position + displacement][column] = Config.player_one
             assert connect_four.check_row_winner()
 
 
@@ -70,9 +84,9 @@ def test_check_diagonal_winner():
         for row in range(0, (Config.width - Config.requirements) + 1):
             connect_four = ConnectFour()
             for i in range(0, Config.requirements):
-                connect_four.board[i+row][-1-i-column] = Config.player_one
+                connect_four.board[i + row][-1 - i - column] = Config.player_one
             assert connect_four.check_diagonal_winner()
             connect_four = ConnectFour()
             for i in range(0, Config.requirements):
-                connect_four.board[Config.requirements-1-i+row][-1-i-column] = Config.player_one
+                connect_four.board[Config.requirements - 1 - i + row][-1 - i - column] = Config.player_one
             assert connect_four.check_diagonal_winner()
