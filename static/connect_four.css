@@ -64,7 +64,7 @@ body {
     justify-content: center;
 }
 
-.connect_four_element, .connect_four_element_player_one, .connect_four_element_player_two {
+.connect_four_element, .connect_four_element_Y, .connect_four_element_R {
 	height: 100%;
     margin: 2px;
     border-radius: 100%;
@@ -80,11 +80,11 @@ body {
     background-color: rgba(255, 255, 255, 0.11);
 }
 
-.connect_four_element_player_one {
+.connect_four_element_Y {
     background-color: rgba(255, 195, 0, 0.65);
 }
 
-.connect_four_element_player_two {
+.connect_four_element_R {
     background-color: rgba(255, 0, 0, 0.45);
 }
 
