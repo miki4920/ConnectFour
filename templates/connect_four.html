@@ -6,7 +6,10 @@
 <body>
 <div class="main">
 <div class="side_panel">
-    <button type="button" class="clickable" onclick="send_command('reset')">Reset</button>
+    <div id="back">
+        <button type="button" class="clickable" onclick="send_command('reset')">Reset</button>
+        <button type="button" class="clickable" onclick="back()">Back</button>
+    </div>
 </div>
 <div id="connect_four">
     {% for column in board %}

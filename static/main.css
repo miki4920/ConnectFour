@@ -54,6 +54,13 @@ p {
     background-color: rgba(255, 255, 255, 0.15);
 }
 
+#back {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-basis: 100%;
+}
+
 #connect_four {
     display: flex;
     flex-basis: 50%;
