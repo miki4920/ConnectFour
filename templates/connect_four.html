@@ -1,45 +1,60 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" href="/static/main.css">
+    <link rel="stylesheet" href="/static/entry.css">
     <title>Connect Four</title>
 </head>
 <body>
-<div class="main">
-<div class="side_panel">
-    <div id="back">
-        <button type="button" class="clickable" onclick="send_command('reset')">Reset</button>
-        <button type="button" class="clickable" onclick="back()">Back</button>
+    <div id="entry_form">
+        <div id="background">
+            <div id="username_form" class="form">
+                <label for="username">Username</label>
+                <input id="username" autocomplete="off">
+                <button type="button" onclick="set_username()" id="submit_username">
+                    Play
+                </button>
+            </div>
+            <div id="mode_form" class="form">
+                <p>Connect Four Modes</p>
+                <button type="button" name="mode" value="" onclick="mode()">Single Player</button>
+                <button type="button" name="mode" value="Multiplayer" onclick="mode()">Multi Player</button>
+                <p id="current_players"></p>
+            </div>
+        </div>
     </div>
-</div>
-<div id="connect_four">
-    {% for column in board %}
-        {% set column_loop = loop %}
-        <div class="connect_four_column">
-            {% for element in column %}
-                {% if element == player_one %}
-                    <button class="connect_four_element_Y" id="{{ column_loop.index0 }},{{ loop.index0 }}"
-                            onclick="send_command('add', {{ column_loop.index0 }})"></button>
-                {% elif element == player_two %}
-                    <button class="connect_four_element_R" id="{{ column_loop.index0 }},{{ loop.index0 }}"
-                            onclick="send_command('add', {{ column_loop.index0 }})"></button>
-                {% else %}
-                    <button class="connect_four_element" id="{{ column_loop.index0 }},{{ loop.index0 }}"
-                            onclick="send_command('add', {{ column_loop.index0 }})"></button>
-                {% endif %}
+    <div class="main">
+        <div class="side_panel">
+            <button type="button" class="clickable" onclick="send_command('reset')">Reset</button>
+        </div>
+        <div id="connect_four">
+            {% for column in board %}
+                {% set column_loop = loop %}
+                <div class="connect_four_column">
+                    {% for element in column %}
+                        {% if element == player_one %}
+                            <button class="connect_four_element_Y" id="{{ column_loop.index0 }},{{ loop.index0 }}"
+                                    onclick="send_command('add', {{ column_loop.index0 }})"></button>
+                        {% elif element == player_two %}
+                            <button class="connect_four_element_R" id="{{ column_loop.index0 }},{{ loop.index0 }}"
+                                    onclick="send_command('add', {{ column_loop.index0 }})"></button>
+                        {% else %}
+                            <button class="connect_four_element" id="{{ column_loop.index0 }},{{ loop.index0 }}"
+                                    onclick="send_command('add', {{ column_loop.index0 }})"></button>
+                        {% endif %}
+                    {% endfor %}
+                </div>
             {% endfor %}
         </div>
-    {% endfor %}
-</div>
-<div class="side_panel">
-    <button type="button" id="player">Player:
-        {% if player %}{{ player_one_name }}{% else %}{{ player_two_name }}{% endif %}</button>
-    <button type="button" id="winner">Winner: {% if winner %}{{ winner }}{% else %}None{% endif %}</button>
-</div>
-</div>
+        <div class="side_panel">
+            <button type="button" id="player">Player:
+                {% if player %}{{ player_one_name }}{% else %}{{ player_two_name }}{% endif %}</button>
+            <button type="button" id="winner">Winner: {% if winner %}{{ winner }}{% else %}None{% endif %}</button>
+        </div>
+    </div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
         integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
         crossorigin="anonymous"></script>
-<script src="/static/connect_four.js"></script>
+<script src="/static/main.js"></script>
 
 </html>
