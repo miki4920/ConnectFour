@@ -1,0 +1,30 @@
+.mode_form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+}
+
+.background {
+    display: flex;
+    background-color: rgb(39, 39, 39);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 25%;
+    flex-grow: 0;
+    padding: 8px;
+    border: solid;
+    border-radius: 8px;
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.mode_buttons {
+    margin: 4px;
+    width: 100%;
+}
