@@ -8,7 +8,7 @@ def generate_board() -> List[List[str]]:
     return board
 
 
-def transpose_board(board):
+def transpose_board(board: List[List[str]]) -> List[str]:
     transposed_board = []
     for i in range(0, Config.height):
         row = ""
@@ -39,7 +39,7 @@ class ConnectFour:
     def reset_board(self):
         self.board = generate_board()
 
-    def add_element(self, position: int, player: bool):
+    def add_element(self, position: int, player: bool) -> bool:
         column = self.board[position]
         for i in range(0, len(column)):
             if not column[i]:
