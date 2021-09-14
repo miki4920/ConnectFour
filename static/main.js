@@ -11,29 +11,8 @@ function correct_username(username) {
     let mode_form = document.getElementById("mode_form")
     mode_form.style.display = "flex"
 
-    socket.auth = {username};
-    socket.connect();
-
-    socket.on('connect_four_board' + username, (message) => {
-        for (let [key, value] of Object.entries(message)) {
-            let element = document.getElementById(key);
-            element.classList.remove(...element.classList);
-            if (value) {
-                element.classList.add("connect_four_element_" + value)
-            } else {
-                element.classList.add("connect_four_element")
-            }
-        }
-    });
-
-    socket.on('connect_four_player' + username, (message) => {
-        document.getElementById("player").innerHTML = "Player: " + message;
-    })
-
-    socket.on('connect_four_winner' + username, (message) => {
-        document.getElementById("winner").innerHTML = "Winner: " + message;
-    })
-
+    socket.auth = {"username": username}
+    socket.connect()
 }
 
 function set_username() {
@@ -56,17 +35,33 @@ function mode() {
     socket.emit("singleplayer")
 }
 
+function send_command(command, argument = "") {
+    let message = command + ":" + argument;
+    socket.emit("connect_four_update", message);
+}
 
-let socket = io.connect(window.location.host, {autoConnect: false});
-
+socket = io.connect(window.location.host, {autoConnect: false});
 
 socket.on("players", (message) => {
     update_players(message);
 })
 
-function send_command(command, argument = "") {
-    let message = command + ":" + argument;
-    socket.emit("connect_four_update", message);
-}
+socket.on('connect_four_board', (message) => {
+    let board = message["connect_four"]
+    let player = message["player"]
+    let winner = message["winner"]
+    for (let [key, value] of Object.entries(board)) {
+        let element = document.getElementById(key);
+        element.classList.remove(...element.classList);
+        if (value) {
+            element.classList.add("connect_four_element_" + value)
+        } else {
+            element.classList.add("connect_four_element")
+        }
+    }
+    document.getElementById("player").innerHTML = "Player: " + player;
+    document.getElementById("winner").innerHTML = "Winner: " + winner;
+});
+
 
 
