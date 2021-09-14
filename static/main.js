@@ -25,15 +25,17 @@ function set_username() {
     }
 }
 
-function update_players(players) {
-    let player_number = document.getElementById("current_players")
-    player_number.innerText = "Current Players: " + players;
-}
-
-function mode() {
+function singleplayer() {
     document.getElementById("entry_form").style.display = "none";
     socket.emit("singleplayer")
 }
+
+function multiplayer() {
+    document.getElementById("mode_form").style.display = "none";
+    document.getElementById("looking_form").style.display = "flex";
+    socket.emit("multiplayer")
+}
+
 
 function send_command(command, argument = "") {
     let message = command + ":" + argument;
@@ -42,11 +44,16 @@ function send_command(command, argument = "") {
 
 socket = io.connect(window.location.host, {autoConnect: false});
 
+function update_players(players) {
+    let player_number = document.getElementById("current_players")
+    player_number.innerText = "Current Players: " + players;
+}
+
 socket.on("players", (message) => {
     update_players(message);
 })
 
-socket.on('connect_four_board', (message) => {
+function update_board(message) {
     let board = message["connect_four"]
     let player = message["player"]
     let winner = message["winner"]
@@ -61,7 +68,15 @@ socket.on('connect_four_board', (message) => {
     }
     document.getElementById("player").innerHTML = "Player: " + player;
     document.getElementById("winner").innerHTML = "Winner: " + winner;
+}
+
+socket.on('connect_four_board_singleplayer', (message) => {
+    update_board(message)
 });
 
+socket.on('connect_four_board_multiplayer', (message) => {
+    document.getElementById("entry_form").style.display = "none";
+    update_board(message)
+});
 
 

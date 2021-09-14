@@ -1,8 +1,9 @@
 import json
 import os
+import random
 
-from flask import Flask, make_response, render_template, request, redirect
-from flask_socketio import SocketIO, emit, ConnectionRefusedError
+from flask import Flask, make_response, render_template, request
+from flask_socketio import SocketIO, emit, ConnectionRefusedError, join_room
 
 from board import ConnectFour, generate_board
 from config import Config
@@ -11,12 +12,14 @@ app = Flask(__name__)
 app.config['SESSION_TYPE'] = 'filesystem'
 socketio = SocketIO(app)
 current_players = {}
+looking_for_multiplayer = []
 
 
 class User:
     def __init__(self, session_id, username):
         self.session_id = session_id
         self.username = username
+        self.room = None
 
     def __eq__(self, other):
         return self.username == other
@@ -57,7 +60,7 @@ def add_element(user, argument):
     return connect_four, player, winner
 
 
-def reset_board(user, argument):
+def reset_board(user, argument=None):
     connect_four, player = user.get_user_data()
     connect_four.reset_board()
     winner = ""
@@ -67,16 +70,24 @@ def reset_board(user, argument):
 @socketio.on("connect")
 def on_connect(auth):
     username = auth.get("username")
-    if username and username not in current_players:
+    if username and username not in current_players.keys():
         current_players[request.sid] = (User(request.sid, username))
         emit("players", len(current_players), broadcast=True)
     else:
         raise ConnectionRefusedError('You must provide a unique username!')
 
 
+def remove_looking_for_multiplayer(sid):
+    try:
+        looking_for_multiplayer.remove(sid)
+    except ValueError:
+        pass
+
+
 @socketio.on("disconnect")
 def on_disconnect():
     del current_players[request.sid]
+    remove_looking_for_multiplayer(request.sid)
 
 
 @socketio.on("singleplayer")
@@ -88,6 +99,23 @@ def single_player_board():
     winner = winner if winner else "None"
     emit("connect_four_board", {"connect_four": connect_four - ConnectFour(), "player": player, "winner": winner},
          room=user.session_id)
+
+
+@socketio.on("multiplayer")
+def multi_player_board():
+    user = current_players[request.sid]
+    if len(looking_for_multiplayer) > 0:
+        opponent = random.choice(list(looking_for_multiplayer))
+        join_room(opponent.session_id)
+        user.room = opponent.session_id
+        opponent.room = opponent.session_id
+        connect_four, player, winner = reset_board(opponent)
+        remove_looking_for_multiplayer(user.session_id)
+        remove_looking_for_multiplayer(opponent.session_id)
+        emit("connect_four_board_multiplayer", {"connect_four": connect_four.board, "player": player, "winner": winner},
+             room=opponent.session_id)
+    else:
+        looking_for_multiplayer.append(user)
 
 
 @socketio.on("connect_four_update")
@@ -105,8 +133,10 @@ def single_player_update(message):
     connect_four = connect_four - player_board
     player = Config.player_one_name if player else Config.player_two_name
     winner = winner if winner else "None"
-
-    emit("connect_four_board", {"connect_four": connect_four, "player": player, "winner": winner}, room=user.session_id)
+    if user.room:
+        emit("connect_four_board_singleplayer", {"connect_four": connect_four, "player": player, "winner": winner}, to=user.room)
+    else:
+        emit("connect_four_board_singleplayer", {"connect_four": connect_four, "player": player, "winner": winner})
 
 
 if __name__ == '__main__':

@@ -31,11 +31,12 @@
 }
 
 
-#mode_form {
+#mode_form, #looking_form {
     display: none;
 }
 
-#username_form > *, #mode_form > * {
+
+#username_form > *, #mode_form > *, #looking_form > * {
     width: 100%;
     border: none;
     border-radius: 8px;
