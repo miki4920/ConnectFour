@@ -25,15 +25,17 @@ class User:
         return self.username == other
 
     def get_user_data(self):
-        if self.username and os.path.exists(f"games/{self.username}.json"):
-            with open(f"games/{self.username}.json", "r") as file:
+        path = self.room if self.room else self.username
+        if path and os.path.exists(f"games/{path}.json"):
+            with open(f"games/{path}.json", "r") as file:
                 data_file = json.load(file)
                 return ConnectFour(data_file["board"]), data_file["player"]
         return ConnectFour(generate_board()), True
 
     def set_user_data(self, board, player):
+        path = self.room if self.room else self.username
         data_dictionary = {"board": board, "player": player}
-        with open(f"games/{self.username}.json", "w") as file:
+        with open(f"games/{path}.json", "w") as file:
             json.dump(data_dictionary, file)
 
 
@@ -106,14 +108,16 @@ def multi_player_board():
     user = current_players[request.sid]
     if len(looking_for_multiplayer) > 0:
         opponent = random.choice(list(looking_for_multiplayer))
-        join_room(opponent.session_id)
-        user.room = opponent.session_id
-        opponent.room = opponent.session_id
+        room = user.username + opponent.username
+        join_room(room, user.session_id)
+        join_room(room, opponent.session_id)
+        user.room = room
+        opponent.room = room
         connect_four, player, winner = reset_board(opponent)
         remove_looking_for_multiplayer(user.session_id)
         remove_looking_for_multiplayer(opponent.session_id)
-        emit("connect_four_board_multiplayer", {"connect_four": connect_four.board, "player": player, "winner": winner},
-             room=opponent.session_id)
+        emit("connect_four_board_multiplayer", {"connect_four": connect_four - ConnectFour(), "player": player, "winner": winner},
+             to=room, include_self=True)
     else:
         looking_for_multiplayer.append(user)
 
@@ -134,7 +138,7 @@ def single_player_update(message):
     player = Config.player_one_name if player else Config.player_two_name
     winner = winner if winner else "None"
     if user.room:
-        emit("connect_four_board_singleplayer", {"connect_four": connect_four, "player": player, "winner": winner}, to=user.room)
+        emit("connect_four_board_singleplayer", {"connect_four": connect_four, "player": player, "winner": winner}, room=user.room)
     else:
         emit("connect_four_board_singleplayer", {"connect_four": connect_four, "player": player, "winner": winner})
 
