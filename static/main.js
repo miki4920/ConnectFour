@@ -69,7 +69,7 @@ function update_board(message) {
 }
 
 socket.on('update', (message) => {
-    document.getElementById("entry_form").style.display = "none";
+    console.log(message)
     update_board(message)
 });
 

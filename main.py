@@ -20,6 +20,7 @@ class User:
         self.session_id = session_id
         self.username = username
         self.room = None
+        self.player = False
 
     def __eq__(self, other):
         return self.username == other
@@ -86,10 +87,11 @@ def multi_player_board():
         join_room(room, opponent.session_id)
         user.room = room
         opponent.room = room
+        user.player = True
         remove_looking_for_multiplayer(user.session_id)
         remove_looking_for_multiplayer(opponent.session_id)
-        emit("multiplayer", {"connect_four": {}, "player": Config.player_one_name, "winner": "None"},
-             to=room, include_self=True)
+        emit("multiplayer", {"instructions": {}, "player": Config.player_one_name, "winner": "None"},
+             room=room)
     else:
         looking_for_multiplayer.append(user)
 
@@ -97,7 +99,7 @@ def multi_player_board():
 def add_element(user, user_board, position):
     connect_four, player = user.get_user_data()
     winner = connect_four.check_winner()
-    if not winner:
+    if not winner and (not user.room or user.player == player):
         if connect_four.add_element(int(position), player):
             winner = connect_four.check_winner()
             player = not player
