@@ -39,13 +39,16 @@ function send_command(command, argument = "") {
 socket = io.connect(window.location.host, {autoConnect: false});
 
 function update_players(players) {
+    let player_number = document.getElementById("current_players")
+    player_number.innerText = "Current Players: " + players;
+}
+
+socket.on("connected", (message) => {
     let username_form = document.getElementById("username_form")
     username_form.style.display = "none"
     let mode_form = document.getElementById("mode_form")
     mode_form.style.display = "flex"
-    let player_number = document.getElementById("current_players")
-    player_number.innerText = "Current Players: " + players;
-}
+})
 
 socket.on("players", (message) => {
     update_players(message);
@@ -69,7 +72,6 @@ function update_board(message) {
 }
 
 socket.on('update', (message) => {
-    console.log(message)
     update_board(message)
 });
 

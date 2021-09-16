@@ -57,6 +57,7 @@ def on_connect(auth):
     username = auth.get("username")
     if username and username not in [player.username for player in current_players.values()]:
         current_players[request.sid] = (User(request.sid, username))
+        emit("connected")
         emit("players", len(current_players), broadcast=True)
     else:
         raise ConnectionRefusedError('You must provide a unique username!')
