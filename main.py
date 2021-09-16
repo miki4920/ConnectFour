@@ -9,7 +9,6 @@ from board import ConnectFour, generate_board
 from config import Config
 
 app = Flask(__name__)
-app.config['SESSION_TYPE'] = 'filesystem'
 socketio = SocketIO(app)
 current_players = {}
 looking_for_multiplayer = []
