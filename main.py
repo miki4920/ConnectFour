@@ -40,7 +40,7 @@ class User:
 
 
 @app.route("/", methods=["GET"])
-def main():
+def index():
     board = generate_board()
     player = Config.player_one_name
     winner = ""
@@ -57,7 +57,7 @@ def on_connect(auth):
     username = auth.get("username")
     if username and username not in [player.username for player in current_players.values()]:
         current_players[request.sid] = (User(request.sid, username))
-        emit("connected")
+        emit("connected", {"display_username": username})
         emit("players", len(current_players), broadcast=True)
     else:
         raise ConnectionRefusedError('You must provide a unique username!')
@@ -77,19 +77,24 @@ def on_disconnect():
     leave_room(player.room, player.session_id)
 
 
+def multiplayer_player(user, opponent, room):
+    join_room(room, user.session_id)
+    user.room = room
+    remove_looking_for_multiplayer(user.session_id)
+    player = Config.player_one_name if user.player else Config.player_two_name
+    emit("multiplayer_data", {"username": user.username, "opponent": opponent.username, "colour": player},
+         to=user.session_id)
+
+
 @socketio.on("multiplayer")
-def multi_player_board():
+def multiplayer_index():
     user = current_players[request.sid]
     if len(looking_for_multiplayer) > 0:
         opponent = random.choice(list(looking_for_multiplayer))
         room = user.session_id + opponent.session_id
-        join_room(room, user.session_id)
-        join_room(room, opponent.session_id)
-        user.room = room
-        opponent.room = room
-        user.player = True
-        remove_looking_for_multiplayer(user.session_id)
-        remove_looking_for_multiplayer(opponent.session_id)
+        random.choice([user, opponent]).player = True
+        multiplayer_player(user, opponent, room)
+        multiplayer_player(opponent, user, room)
         emit("multiplayer", {"instructions": {}, "player": Config.player_one_name, "winner": "None"},
              room=room)
     else:

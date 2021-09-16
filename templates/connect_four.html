@@ -27,6 +27,8 @@
     </div>
     <div class="main">
         <div class="side_panel">
+            <button type="button" id="display_username">Username: Not Connected</button>
+            <button type="button" id="colour" class="multiplayer_button">Your Colour: </button>
             <button type="button" class="clickable" onclick="send_command('reset')">Reset</button>
         </div>
         <div id="connect_four">
@@ -49,7 +51,7 @@
             {% endfor %}
         </div>
         <div class="side_panel">
-            <button type="button" id="player">Player:
+            <button type="button" id="player">Current Player:
                 {% if player %}{{ player_one_name }}{% else %}{{ player_two_name }}{% endif %}</button>
             <button type="button" id="winner">Winner: {% if winner %}{{ winner }}{% else %}None{% endif %}</button>
         </div>

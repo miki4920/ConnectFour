@@ -109,4 +109,9 @@ p {
     background-color: rgba(255, 0, 0, 0.45);
 }
 
+.multiplayer_button {
+    display: none;
+}
+
+
 

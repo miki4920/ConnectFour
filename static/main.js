@@ -48,6 +48,9 @@ socket.on("connected", (message) => {
     username_form.style.display = "none"
     let mode_form = document.getElementById("mode_form")
     mode_form.style.display = "flex"
+    for (let [key, value] of Object.entries(message)) {
+        document.getElementById(key).innerText = "Username: " + value;
+    }
 })
 
 socket.on("players", (message) => {
@@ -67,7 +70,7 @@ function update_board(message) {
             element.classList.add("connect_four_element")
         }
     }
-    document.getElementById("player").innerHTML = "Player: " + player;
+    document.getElementById("player").innerHTML = "Current Player: " + player;
     document.getElementById("winner").innerHTML = "Winner: " + winner;
 }
 
@@ -75,10 +78,23 @@ socket.on('update', (message) => {
     update_board(message)
 });
 
+function show_buttons(message) {
+    let buttons = document.getElementsByClassName("multiplayer_button");
+    for(let button of buttons) {
+        console.log(button.id)
+        button.innerHTML = button.innerHTML + message[button.id];
+        button.style.display = "inline-block";
+    }
+}
+
 socket.on('multiplayer', (message) => {
     document.getElementById("entry_form").style.display = "none";
     update_board(message)
 });
+
+socket.on('multiplayer_data', (message) => {
+    show_buttons(message)
+})
 
 socket.on("connect_error", (err) => {
     let button = document.getElementById("submit_username")
