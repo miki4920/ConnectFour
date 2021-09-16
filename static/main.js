@@ -4,13 +4,6 @@ function incorrect_username() {
 }
 
 function correct_username(username) {
-    document.cookie = "username=" + username;
-    let username_form = document.getElementById("username_form")
-    username_form.style.display = "none"
-
-    let mode_form = document.getElementById("mode_form")
-    mode_form.style.display = "flex"
-
     socket.auth = {"username": username}
     socket.connect()
 }
@@ -27,7 +20,7 @@ function set_username() {
 
 function singleplayer() {
     document.getElementById("entry_form").style.display = "none";
-    socket.emit("update", {"command": "get"})
+    socket.emit("command", {"command": "get"})
 }
 
 function multiplayer() {
@@ -46,6 +39,10 @@ function send_command(command, argument = "") {
 socket = io.connect(window.location.host, {autoConnect: false});
 
 function update_players(players) {
+    let username_form = document.getElementById("username_form")
+    username_form.style.display = "none"
+    let mode_form = document.getElementById("mode_form")
+    mode_form.style.display = "flex"
     let player_number = document.getElementById("current_players")
     player_number.innerText = "Current Players: " + players;
 }
@@ -55,10 +52,10 @@ socket.on("players", (message) => {
 })
 
 function update_board(message) {
-    let board = message["connect_four"]
+    let instructions = message["instructions"]
     let player = message["player"]
     let winner = message["winner"]
-    for (let [key, value] of Object.entries(board)) {
+    for (let [key, value] of Object.entries(instructions)) {
         let element = document.getElementById(key);
         element.classList.remove(...element.classList);
         if (value) {
@@ -79,6 +76,11 @@ socket.on('update', (message) => {
 socket.on('multiplayer', (message) => {
     document.getElementById("entry_form").style.display = "none";
     update_board(message)
+});
+
+socket.on("connect_error", (err) => {
+    let button = document.getElementById("submit_username")
+    button.style.background = "rgba(255, 0, 0, 0.45)";
 });
 
 

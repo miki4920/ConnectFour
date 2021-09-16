@@ -55,7 +55,7 @@ def main():
 @socketio.on("connect")
 def on_connect(auth):
     username = auth.get("username")
-    if username and username not in current_players.keys():
+    if username and username not in [player.username for player in current_players.values()]:
         current_players[request.sid] = (User(request.sid, username))
         emit("players", len(current_players), broadcast=True)
     else:
@@ -94,28 +94,27 @@ def multi_player_board():
         looking_for_multiplayer.append(user)
 
 
-def add_element(user, argument):
+def add_element(user, user_board, position):
     connect_four, player = user.get_user_data()
     winner = connect_four.check_winner()
     if not winner:
-        if connect_four.add_element(int(argument), player):
+        if connect_four.add_element(int(position), player):
             winner = connect_four.check_winner()
             player = not player
-    winner = "None" if not winner else winner
-    return connect_four, player, winner
+    return connect_four, connect_four-user_board, player, winner
 
 
-def reset_board(user, argument=None):
+def reset_board(user, user_board, argument=None):
     connect_four, player = user.get_user_data()
     connect_four.reset_board()
     winner = "None"
-    return connect_four, player, winner
+    return connect_four, connect_four-user_board, player, winner
 
 
-def get_board(user, argument=None):
+def get_board(user, user_board, argument=None):
     connect_four, player = user.get_user_data()
     winner = connect_four.check_winner()
-    return connect_four, player, winner
+    return connect_four, connect_four-ConnectFour(), player, winner
 
 
 @socketio.on("command")
@@ -125,18 +124,16 @@ def update(message):
                           "get": get_board}
     command, argument = message.get("command"), message.get("argument")
     user = current_players[request.sid]
-    player_board, player = user.get_user_data()
+    user_board, player = user.get_user_data()
 
-    connect_four, player, winner = command_dictionary[command](user, argument)
+    connect_four, instructions, player, winner = command_dictionary[command](user, user_board, argument)
     user.set_user_data(connect_four.board, player)
-
-    connect_four = connect_four - player_board
     player = Config.player_one_name if player else Config.player_two_name
     winner = winner if winner else "None"
     if user.room:
-        emit("update", {"connect_four": connect_four, "player": player, "winner": winner}, room=user.room)
+        emit("update", {"instructions": instructions, "player": player, "winner": winner}, room=user.room)
     else:
-        emit("update", {"connect_four": connect_four, "player": player, "winner": winner})
+        emit("update", {"instructions": instructions, "player": player, "winner": winner})
 
 
 if __name__ == '__main__':
