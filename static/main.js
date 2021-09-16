@@ -27,7 +27,7 @@ function set_username() {
 
 function singleplayer() {
     document.getElementById("entry_form").style.display = "none";
-    socket.emit("singleplayer")
+    socket.emit("update", {"command": "get"})
 }
 
 function multiplayer() {
@@ -38,8 +38,9 @@ function multiplayer() {
 
 
 function send_command(command, argument = "") {
-    let message = command + ":" + argument;
-    socket.emit("connect_four_update", message);
+    let message = {"command":command,
+            "argument": + argument};
+    socket.emit("command", message);
 }
 
 socket = io.connect(window.location.host, {autoConnect: false});
@@ -70,11 +71,12 @@ function update_board(message) {
     document.getElementById("winner").innerHTML = "Winner: " + winner;
 }
 
-socket.on('connect_four_board_singleplayer', (message) => {
+socket.on('update', (message) => {
+    document.getElementById("entry_form").style.display = "none";
     update_board(message)
 });
 
-socket.on('connect_four_board_multiplayer', (message) => {
+socket.on('multiplayer', (message) => {
     document.getElementById("entry_form").style.display = "none";
     update_board(message)
 });
