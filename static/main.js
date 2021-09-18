@@ -79,18 +79,14 @@ socket.on('update', (message) => {
 });
 
 function show_buttons(message) {
+    document.getElementById("entry_form").style.display = "none";
     let buttons = document.getElementsByClassName("multiplayer_button");
     for(let button of buttons) {
-        console.log(button.id)
         button.innerHTML = button.innerHTML + message[button.id];
         button.style.display = "inline-block";
     }
 }
 
-socket.on('multiplayer', (message) => {
-    document.getElementById("entry_form").style.display = "none";
-    update_board(message)
-});
 
 socket.on('multiplayer_data', (message) => {
     show_buttons(message)

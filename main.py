@@ -41,7 +41,7 @@ class User:
 
 @app.route("/", methods=["GET"])
 def index():
-    board = generate_board()
+    board = ConnectFour().board
     player = Config.player_one_name
     winner = ""
     response = make_response(
@@ -71,9 +71,9 @@ def remove_looking_for_multiplayer(sid):
 
 @socketio.on("disconnect")
 def on_disconnect():
-    player = current_players[request.sid]
     del current_players[request.sid]
     remove_looking_for_multiplayer(request.sid)
+    player = current_players[request.sid]
     leave_room(player.room, player.session_id)
 
 
@@ -95,8 +95,6 @@ def multiplayer_index():
         random.choice([user, opponent]).player = True
         multiplayer_player(user, opponent, room)
         multiplayer_player(opponent, user, room)
-        emit("multiplayer", {"instructions": {}, "player": Config.player_one_name, "winner": "None"},
-             room=room)
     else:
         looking_for_multiplayer.append(user)
 
@@ -114,7 +112,7 @@ def add_element(user, user_board, position):
 def reset_board(user, user_board, argument=None):
     connect_four, player = user.get_user_data()
     connect_four.reset_board()
-    winner = "None"
+    winner = ""
     return connect_four, connect_four-user_board, player, winner
 
 
