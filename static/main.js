@@ -18,15 +18,20 @@ function set_username() {
     }
 }
 
-function singleplayer() {
-    document.getElementById("entry_form").style.display = "none";
-    socket.emit("command", {"command": "get"})
+function mode(button) {
+    if(parseInt(button.value) === 0) {
+        document.getElementById("entry_form").style.display = "none";
+        socket.emit("command", {"command": "get"})
+    }
+    else if (parseInt(button.value) === 1) {
+        document.getElementById("mode_form").style.display = "none";
+        document.getElementById("looking_for").style.display = "flex";
+        socket.emit("multiplayer")
+    }
 }
 
 function multiplayer() {
-    document.getElementById("mode_form").style.display = "none";
-    document.getElementById("looking_form").style.display = "flex";
-    socket.emit("multiplayer")
+
 }
 
 
@@ -80,10 +85,10 @@ socket.on('update', (message) => {
 
 function show_buttons(message) {
     document.getElementById("entry_form").style.display = "none";
-    let buttons = document.getElementsByClassName("multiplayer_button");
-    for(let button of buttons) {
-        button.innerHTML = button.innerHTML + message[button.id];
-        button.style.display = "inline-block";
+    let paragraphs = document.getElementsByClassName("multiplayer_button");
+    for(let paragraph of paragraphs) {
+        paragraph.innerText = paragraph.innerText + message[paragraph.id];
+        paragraph.style.display = "block";
     }
 }
 
