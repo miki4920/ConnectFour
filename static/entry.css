@@ -9,25 +9,16 @@
     height: 100%;
 }
 
-#background {
+
+fieldset {
     display: flex;
-    background-color: rgb(39, 39, 39);
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    width: 25%;
-    flex-grow: 0;
     padding: 8px;
+    border-style: solid;
+    border-color: rgba(255,255,255, 0.09);
     border-radius: 8px;
-    border: 2px solid rgba(255, 255, 255, 0.15);
-}
-
-
-.form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
+    background-color: rgb(41, 41, 41);
 }
 
 

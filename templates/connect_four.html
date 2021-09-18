@@ -5,27 +5,25 @@
     <title>Connect Four</title>
 </head>
 <body>
-    <div id="entry_form">
-        <div id="background">
-            <div id="username_form" class="form">
+    <section id="entry_form">
+            <fieldset id="username_form">
                 <label for="username">Username</label>
                 <input id="username" autocomplete="off">
                 <button type="button" onclick="set_username()" id="submit_username">
                     Play
                 </button>
-            </div>
-            <div id="mode_form" class="form">
+            </fieldset>
+            <fieldset id="mode_form">
                 <p>Connect Four Modes</p>
                 <button type="button" name="mode" value="" onclick="singleplayer()">Single Player</button>
                 <button type="button" name="mode" value="Multiplayer" onclick="multiplayer()">Multi Player</button>
                 <p id="current_players"></p>
-            </div>
-            <div id="looking_form" class="form">
+            </fieldset>
+            <fieldset id="looking_form">
                 <p>Looking for another player...</p>
-            </div>
-        </div>
-    </div>
-    <div class="main">
+            </fieldset>
+    </section>
+    <main title="Connect Four Board">
         <div class="side_panel">
             <button type="button" id="display_username">Username: Not Connected</button>
             <button type="button" id="colour" class="multiplayer_button">Your Colour: </button>
@@ -51,11 +49,14 @@
             {% endfor %}
         </div>
         <div class="side_panel">
-            <button type="button" id="player">Current Player:
-                {% if player %}{{ player_one_name }}{% else %}{{ player_two_name }}{% endif %}</button>
-            <button type="button" id="winner">Winner: {% if winner %}{{ winner }}{% else %}None{% endif %}</button>
+            <div class="info_box">
+            <p id="opponent" class="multiplayer_button">Opponent: </p>
+            <p id="player">Current Player:
+                {% if player %}{{ player_one_name }}{% else %}{{ player_two_name }}{% endif %}</p>
+            <p id="winner">Winner: {% if winner %}{{ winner }}{% else %}None{% endif %}</p>
+            </div>
         </div>
-    </div>
+    </main>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
         integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
