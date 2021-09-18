@@ -5,34 +5,34 @@
     <title>Connect Four</title>
 </head>
 <body>
-    <section id="entry_form">
-            <fieldset id="username_form">
+    <section title="Entry Form" id="entry_form">
+            <fieldset title="Username Form" id="username_form">
                 <label for="username">Username</label>
                 <input id="username" autocomplete="off">
                 <button type="button" onclick="set_username()" id="submit_username">
                     Play
                 </button>
             </fieldset>
-            <fieldset id="mode_form">
-                <p>Connect Four Modes</p>
-                <button type="button" name="mode" value="" onclick="singleplayer()">Single Player</button>
-                <button type="button" name="mode" value="Multiplayer" onclick="multiplayer()">Multi Player</button>
-                <p id="current_players"></p>
-            </fieldset>
-            <fieldset id="looking_form">
-                <p>Looking for another player...</p>
-            </fieldset>
+            <menu title="Game Mode" id="mode_form">
+                <li><label for="mode_form">Connect Four Modes</label></li>
+                <li><p id="current_players"></p></li>
+                <li><button type="button" name="mode" value="" onclick="singleplayer()">Single Player</button></li>
+                <li><button type="button" name="mode" value="Multiplayer" onclick="multiplayer()">Multi Player</button></li>
+            </menu>
+            <p id="looking_for">Looking for another player...</p>
     </section>
     <main title="Connect Four Board">
-        <div class="side_panel">
-            <button type="button" id="display_username">Username: Not Connected</button>
-            <button type="button" id="colour" class="multiplayer_button">Your Colour: </button>
-            <button type="button" class="clickable" onclick="send_command('reset')">Reset</button>
-        </div>
-        <div id="connect_four">
+        <aside>
+            <section>
+            <p id="display_username">Username: Not Connected</p>
+            <p id="colour" class="multiplayer_button">Your Colour: </p>
+            </section>
+            <button type="button" onclick="send_command('reset')">Reset</button>
+        </aside>
+        <article>
             {% for column in board %}
                 {% set column_loop = loop %}
-                <div class="connect_four_column">
+                <section class="connect_four_column">
                     {% for element in column %}
                         {% if element == player_one %}
                             <button class="connect_four_element_Y" id="{{ column_loop.index0 }},{{ loop.index0 }}"
@@ -45,17 +45,17 @@
                                     onclick="send_command('add', {{ column_loop.index0 }})"></button>
                         {% endif %}
                     {% endfor %}
-                </div>
+                </section>
             {% endfor %}
-        </div>
-        <div class="side_panel">
-            <div class="info_box">
-            <p id="opponent" class="multiplayer_button">Opponent: </p>
+        </article>
+        <aside>
+            <section>
+            <p id="opponent">Opponent: </p>
             <p id="player">Current Player:
                 {% if player %}{{ player_one_name }}{% else %}{{ player_two_name }}{% endif %}</p>
             <p id="winner">Winner: {% if winner %}{{ winner }}{% else %}None{% endif %}</p>
-            </div>
-        </div>
+            </section>
+        </aside>
     </main>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"

@@ -1,13 +1,10 @@
 * {
     box-sizing: border-box;
-    color: rgba(255, 255, 255, 0.89);
+    color: rgba(255, 255, 255, 0.87);
     font-size: 1.09em;
     font-family: serif;
 }
 
-html {
-    max-height: 100%;
-}
 
 body {
     background-color: rgb(18, 18, 18);
@@ -26,19 +23,27 @@ main {
     min-height: 100%;
 }
 
-.side_panel {
+aside {
     display: flex;
     flex-direction: column;
     flex-basis: 25%;
-    background-color: rgba(255, 255, 255, 0.09);
-    border-radius: 8px;
+    background-color: rgb(31, 31, 31);
 }
 
-.side_panel button, .clickable {
-    background-color: rgba(255, 255, 255, 0.09);
+aside section {
+    background-color: rgb(44, 44, 44);
+}
+
+button {
+    width: 100%;
+    color: #BB86FC;
+    background-color: inherit;
     border: none;
-    border-radius: 8px;
-    margin: 1px 0;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: rgba(255, 255, 255 ,0.12);
 }
 
 p {
@@ -46,22 +51,7 @@ p {
     margin: 0;
 }
 
-.clickable {
-    cursor: pointer;
-}
-
-.clickable:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-}
-
-#back {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    flex-basis: 100%;
-}
-
-#connect_four {
+article {
     display: flex;
     flex-basis: 50%;
     flex-wrap: nowrap;
@@ -87,18 +77,18 @@ p {
     margin: 2px;
     cursor: pointer;
     border-radius: 100%;
-    border-width: 2px;
+    border-width: 3px;
     border-style: solid;
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.11);
 }
 
 .connect_four_element {
-    background-color: rgb(18, 18, 18);
+    background-color: inherit;
 
 }
 
 .connect_four_element:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.14);
 }
 
 .connect_four_element_Y {
@@ -107,10 +97,6 @@ p {
 
 .connect_four_element_R {
     background-color: rgba(255, 0, 0, 0.45);
-}
-
-.multiplayer_button {
-    display: none;
 }
 
 
