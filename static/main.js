@@ -30,11 +30,6 @@ function mode(button) {
     }
 }
 
-function multiplayer() {
-
-}
-
-
 function send_command(command, argument = "") {
     let message = {"command":command,
             "argument": + argument};
@@ -42,11 +37,6 @@ function send_command(command, argument = "") {
 }
 
 socket = io.connect(window.location.host, {autoConnect: false});
-
-function update_players(players) {
-    let player_number = document.getElementById("current_players")
-    player_number.innerText = "Current Players: " + players;
-}
 
 socket.on("connected", (message) => {
     let username_form = document.getElementById("username_form")
@@ -59,7 +49,8 @@ socket.on("connected", (message) => {
 })
 
 socket.on("players", (message) => {
-    update_players(message);
+    let player_number = document.getElementById("current_players")
+    player_number.innerText = "Current Players: " + message;
 })
 
 function update_board(message) {
@@ -80,12 +71,14 @@ function update_board(message) {
 }
 
 socket.on('update', (message) => {
+    let button = document.getElementById("reset")
+    button.className = ''
     update_board(message)
 });
 
 function show_buttons(message) {
     document.getElementById("entry_form").style.display = "none";
-    let paragraphs = document.getElementsByClassName("multiplayer_button");
+    let paragraphs = document.getElementsByClassName("multiplayer");
     for(let paragraph of paragraphs) {
         paragraph.innerText = paragraph.innerText + message[paragraph.id];
         paragraph.style.display = "block";
@@ -101,5 +94,14 @@ socket.on("connect_error", (err) => {
     let button = document.getElementById("submit_username")
     button.style.background = "rgba(255, 0, 0, 0.45)";
 });
+
+
+socket.on("reset_request", (message) => {
+    let button = document.getElementById("reset")
+    button.classList.add("reset_request")
+    socket.emit("reset")
+})
+
+
 
 

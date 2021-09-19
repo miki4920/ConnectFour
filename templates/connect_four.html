@@ -25,9 +25,9 @@
         <aside>
             <section>
             <p id="display_username">Username: Not Connected</p>
-            <p id="colour" class="multiplayer_button">Your Colour: </p>
+            <p id="colour" class="multiplayer">Your Colour: </p>
             </section>
-            <button type="button" onclick="send_command('reset')">Reset</button>
+            <button type="button" id="reset" onclick="send_command('reset')">Reset</button>
         </aside>
         <article>
             {% for column in board %}
@@ -50,7 +50,7 @@
         </article>
         <aside>
             <section>
-            <p id="opponent">Opponent: </p>
+            <p id="opponent" class="multiplayer">Opponent: </p>
             <p id="player">Current Player:
                 {% if player %}{{ player_one_name }}{% else %}{{ player_two_name }}{% endif %}</p>
             <p id="winner">Winner: {% if winner %}{{ winner }}{% else %}None{% endif %}</p>

@@ -3,7 +3,7 @@ import os
 import random
 
 from flask import Flask, make_response, render_template, request
-from flask_socketio import SocketIO, emit, ConnectionRefusedError, join_room, leave_room
+from flask_socketio import SocketIO, emit, ConnectionRefusedError, join_room, leave_room, rooms
 
 from board import ConnectFour, generate_board
 from config import Config
@@ -20,6 +20,7 @@ class User:
         self.username = username
         self.room = None
         self.player = False
+        self.reset = False
 
     def __eq__(self, other):
         return self.username == other
@@ -71,9 +72,9 @@ def remove_looking_for_multiplayer(sid):
 
 @socketio.on("disconnect")
 def on_disconnect():
+    player = current_players[request.sid]
     del current_players[request.sid]
     remove_looking_for_multiplayer(request.sid)
-    player = current_players[request.sid]
     leave_room(player.room, player.session_id)
 
 
@@ -110,10 +111,20 @@ def add_element(user, user_board, position):
 
 
 def reset_board(user, user_board, argument=None):
+    if user.room and not user.reset:
+        emit("reset_request", to=user.room, include_self=False)
+        return None, None, None, None
+    elif user.room and user.reset:
+        user.reset = False
     connect_four, player = user.get_user_data()
     connect_four.reset_board()
     winner = ""
     return connect_four, connect_four-user_board, player, winner
+
+
+@socketio.on("reset")
+def reset_request():
+    current_players[request.sid].reset = True
 
 
 def get_board(user, user_board, argument=None):
@@ -130,8 +141,9 @@ def update(message):
     command, argument = message.get("command"), message.get("argument")
     user = current_players[request.sid]
     user_board, player = user.get_user_data()
-
     connect_four, instructions, player, winner = command_dictionary[command](user, user_board, argument)
+    if connect_four is None:
+        return
     user.set_user_data(connect_four.board, player)
     player = Config.player_one_name if player else Config.player_two_name
     winner = winner if winner else "None"
