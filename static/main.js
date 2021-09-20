@@ -1,20 +1,11 @@
-function incorrect_username() {
-    let button = document.getElementById("submit_username")
-    button.style.background = "rgba(255, 0, 0, 0.45)";
-}
-
-function correct_username(username) {
-    socket.auth = {"username": username}
-    socket.connect()
-}
-
 function set_username() {
     let username = document.getElementById("username").value
     let username_regex = /^[a-zA-Z0-9]+$/
     if (!username_regex.test(username)) {
-        incorrect_username()
+        add_class("submit_username", "error")
     } else {
-        correct_username(username)
+        socket.auth = {"username": username}
+        socket.connect()
     }
 }
 
@@ -36,23 +27,6 @@ function send_command(command, argument = "") {
     socket.emit("command", message);
 }
 
-socket = io.connect(window.location.host, {autoConnect: false});
-
-socket.on("connected", (message) => {
-    let username_form = document.getElementById("username_form")
-    username_form.style.display = "none"
-    let mode_form = document.getElementById("mode_form")
-    mode_form.style.display = "flex"
-    for (let [key, value] of Object.entries(message)) {
-        document.getElementById(key).innerText = "Username: " + value;
-    }
-})
-
-socket.on("players", (message) => {
-    let player_number = document.getElementById("current_players")
-    player_number.innerText = "Current Players: " + message;
-})
-
 function update_board(message) {
     let instructions = message["instructions"]
     let player = message["player"]
@@ -66,9 +40,36 @@ function update_board(message) {
             element.classList.add("connect_four_element")
         }
     }
-    document.getElementById("player").innerHTML = "Current Player: " + player;
-    document.getElementById("winner").innerHTML = "Winner: " + winner;
+    update_text("player", player)
+    update_text("winner", winner)
 }
+
+function show_element(id, method) {
+    document.getElementById(id).style.display = method;
+}
+
+function hide_element(id) {
+    document.getElementById(id).style.display = "none";
+}
+
+function update_text(id, text) {
+    let paragraph = document.getElementById(id)
+    paragraph.innerText = paragraph.innerText.split(": ")[0] + ": " + text;
+}
+
+function add_class(id, class_name) {
+    document.getElementById(id).classList.add(class_name)
+}
+
+function remove_class(id, class_name) {
+    document.getElementById(id).classList.remove(class_name)
+}
+
+socket = io.connect(window.location.host, {autoConnect: false});
+
+socket.on("connect_error", (err) => {
+    add_class("submit_username", "error")
+});
 
 socket.on('update', (message) => {
     let button = document.getElementById("reset")
@@ -76,32 +77,29 @@ socket.on('update', (message) => {
     update_board(message)
 });
 
-function show_buttons(message) {
-    document.getElementById("entry_form").style.display = "none";
-    let paragraphs = document.getElementsByClassName("multiplayer");
-    for(let paragraph of paragraphs) {
-        paragraph.innerText = paragraph.innerText + message[paragraph.id];
-        paragraph.style.display = "block";
-    }
-}
-
-
-socket.on('multiplayer_data', (message) => {
-    show_buttons(message)
-})
-
-socket.on("connect_error", (err) => {
-    let button = document.getElementById("submit_username")
-    button.style.background = "rgba(255, 0, 0, 0.45)";
-});
-
-
 socket.on("reset_request", (message) => {
     let button = document.getElementById("reset")
     button.classList.add("reset_request")
     socket.emit("reset")
 })
 
-
-
-
+socket.on("update_html", (message) => {
+    let type = message["type"]
+    let id = message["id"]
+    let value = message["value"]
+    if(type === "show") {
+        show_element(id, value)
+    }
+    else if(type === "hide") {
+        hide_element(id)
+    }
+    else if(type === "update") {
+        update_text(id, value)
+    }
+    else if(type === "add_class") {
+        add_class(id, value)
+    }
+    else if(type === "remove_class") {
+        remove_class(id, value)
+    }
+})

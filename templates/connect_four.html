@@ -15,7 +15,7 @@
             </fieldset>
             <menu title="Game Mode" id="mode_form">
                 <li><label for="mode_form">Connect Four Modes</label></li>
-                <li><p id="current_players"></p></li>
+                <li><p id="players">Current Players: 0</p></li>
                 <li><button type="button" name="mode" value=0 onclick="mode(this)">Single Player</button></li>
                 <li><button type="button" name="mode" value=1 onclick="mode(this)">Multi Player</button></li>
             </menu>
@@ -25,7 +25,7 @@
         <aside>
             <section>
             <p id="display_username">Username: Not Connected</p>
-            <p id="colour" class="multiplayer">Your Colour: </p>
+            <p id="colour" class="multiplayer">Your Colour: None</p>
             </section>
             <button type="button" id="reset" onclick="send_command('reset')">Reset</button>
         </aside>
@@ -50,7 +50,7 @@
         </article>
         <aside>
             <section>
-            <p id="opponent" class="multiplayer">Opponent: </p>
+            <p id="opponent" class="multiplayer">Opponent: None</p>
             <p id="player">Current Player:
                 {% if player %}{{ player_one_name }}{% else %}{{ player_two_name }}{% endif %}</p>
             <p id="winner">Winner: {% if winner %}{{ winner }}{% else %}None{% endif %}</p>

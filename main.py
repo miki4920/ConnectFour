@@ -58,8 +58,10 @@ def on_connect(auth):
     username = auth.get("username")
     if username and username not in [player.username for player in current_players.values()]:
         current_players[request.sid] = (User(request.sid, username))
-        emit("connected", {"display_username": username})
-        emit("players", len(current_players), broadcast=True)
+        emit("update_html", {"type": "show", "id": "username_form", "value": "none"})
+        emit("update_html", {"type": "show", "id": "mode_form", "value": "flex"})
+        emit("update_html", {"type": "update", "id": "display_username", "value": username})
+        emit("update_html", {"type": "update", "id": "players", "value": len(current_players)}, broadcast=True)
     else:
         raise ConnectionRefusedError('You must provide a unique username!')
 
@@ -83,8 +85,11 @@ def multiplayer_player(user, opponent, room):
     user.room = room
     remove_looking_for_multiplayer(user.session_id)
     player = Config.player_one_name if user.player else Config.player_two_name
-    emit("multiplayer_data", {"username": user.username, "opponent": opponent.username, "colour": player},
-         to=user.session_id)
+    values_dictionary = {"username": user.username, "opponent": opponent.username, "colour": player}
+    for key in values_dictionary:
+        emit("update_html", {"type": "show", "id": key, "value": "block"}, to=user.session_id)
+        emit("update_html", {"type": "update", "id": key, "value": values_dictionary[key]}, to=user.session_id)
+    emit("update_html", {"type": "show", "id": "entry_form", "value": "none"}, to=user.session_id)
 
 
 @socketio.on("multiplayer")
@@ -147,10 +152,7 @@ def update(message):
     user.set_user_data(connect_four.board, player)
     player = Config.player_one_name if player else Config.player_two_name
     winner = winner if winner else "None"
-    if user.room:
-        emit("update", {"instructions": instructions, "player": player, "winner": winner}, room=user.room)
-    else:
-        emit("update", {"instructions": instructions, "player": player, "winner": winner})
+    emit("update", {"instructions": instructions, "player": player, "winner": winner}, room=user.room if user.room else user.session_id)
 
 
 if __name__ == '__main__':
