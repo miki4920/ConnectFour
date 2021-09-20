@@ -95,8 +95,16 @@ article {
     background-color: rgba(255, 195, 0, 0.65);
 }
 
+.connect_four_element_Y:hover {
+    background-color: rgba(255, 195, 0, 0.75);
+}
+
 .connect_four_element_R {
     background-color: rgba(255, 0, 0, 0.45);
+}
+
+.connect_four_element_R:hover {
+    background-color: rgba(255, 0, 0, 0.55);
 }
 
 .multiplayer {
