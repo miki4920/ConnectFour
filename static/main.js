@@ -11,12 +11,12 @@ function set_username() {
 
 function mode(button) {
     if(parseInt(button.value) === 0) {
-        document.getElementById("entry_form").style.display = "none";
+        show_element("entry_form", "none")
         socket.emit("command", {"command": "get"})
     }
     else if (parseInt(button.value) === 1) {
-        document.getElementById("mode_form").style.display = "none";
-        document.getElementById("looking_for").style.display = "flex";
+        show_element("mode_form", "none")
+        show_element("looking_for", "flex")
         socket.emit("multiplayer")
     }
 }
